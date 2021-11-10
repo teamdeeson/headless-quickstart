@@ -1,0 +1,15 @@
+type Query {
+  page: Page!
+}
+
+type Page {
+  title: String
+  slices: [Slice!]!
+}
+
+type SomeSliceDataStructure {
+  field1: String!
+  field2: String
+}
+
+union Slice = SomeSliceDataStructure
