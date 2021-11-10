@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 import { ComponentProps } from "../ComponentProps";
 import { MyComponentFragment } from "./__generated__/MyComponentFragment";
 
-type MyComponentProps = ComponentProps<
+export type MyComponentProps = ComponentProps<
   MyComponentFragment,
   {
     optionalThing?: boolean;
