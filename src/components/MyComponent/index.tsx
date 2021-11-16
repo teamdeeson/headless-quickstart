@@ -13,7 +13,7 @@ export default function MyComponent({ field1, field2, optionalThing = false }: M
   return (
     <div>
       {field1}
-      {field2 && ` ${field2}`}
+      {field2 && <b>{field2.value}</b>}
       {optionalThing && " (with optional thing)"}
     </div>
   );

@@ -9,6 +9,10 @@ import typeDefs from "../schema.graphql";
 const schema = makeExecutableSchema({ typeDefs });
 const mocks = {
   String: () => casual.string,
+  DrupalRoute: () => ({ __typename: "DrupalNodeRoute" }),
+  DrupalRedirectRoute: () => ({ destination: "/test-redirect", status: 307 }),
+  Slices: () => ({ __typename: "SomeSliceDataStructure" }),
+  BasicPageNode: () => ({ slices: [...new Array(casual.integer(2, 10))] }),
 };
 const schemaWithMocks = addMocksToSchema({ schema, mocks });
 

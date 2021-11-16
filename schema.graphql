@@ -119,7 +119,42 @@ type TextWithImageParagraph implements Paragraph @entity {
   image: Image
 }
 
-union Slices @entityType = TextParagraph | TextWithImageParagraph
+type SomeSliceDataStructure implements Paragraph @entity {
+  id: String!
+  field1: String!
+  field2: FormattedField
+}
+
+union Slices @entityType = TextParagraph | TextWithImageParagraph | SomeSliceDataStructure
+
+#
+# Media types (note - not tested with Drupal)
+#
+
+interface Media @entityType {
+  id: String!
+}
+
+type Image implements Media @entity {
+  id: String!
+  alt: String!
+  file: ImageFile
+}
+
+interface File @entityType {
+  id: String!
+}
+
+type FileFile @entity {
+  id: String!
+}
+
+type ImageFile implements File @entity {
+  id: String!
+  url: String!
+  height: Int!
+  width: Int!
+}
 
 #
 # Custom block types
