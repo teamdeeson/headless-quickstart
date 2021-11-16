@@ -9,4 +9,4 @@ export default {
 const Template: Story<MyComponentProps> = (args) => <MyComponent {...args} />;
 
 export const Standard = Template.bind({});
-Standard.args = { field1: "foo", field2: "foo" };
+Standard.args = { field1: "foo", field2: { __typename: "FormattedField", value: "bar" } };
