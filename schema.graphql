@@ -1,15 +1,138 @@
 type Query {
-  page: Page!
+  route(path: String!): DrupalRoute!
 }
 
-type Page {
-  title: String
-  slices: [Slice!]!
+type DrupalNodeRoute {
+  node: Node!
 }
 
-type SomeSliceDataStructure {
-  field1: String!
-  field2: String
+type DrupalNotFoundRoute {
+  node: BasicPageNode!
 }
 
-union Slice = SomeSliceDataStructure
+type DrupalOfflineRoute {
+  node: BasicPageNode!
+}
+
+type DrupalRedirectRoute {
+  destination: String!
+  status: Int!
+}
+
+union DrupalRoute = DrupalNodeRoute | DrupalNotFoundRoute | DrupalOfflineRoute | DrupalRedirectRoute
+
+#
+# Standard Drupal field structures
+#
+
+interface FormattedFieldBase {
+  value: String!
+  format: String!
+  processed: String!
+}
+
+type FormattedField implements FormattedFieldBase {
+  value: String!
+  format: String!
+  processed: String!
+}
+
+type FormattedFieldWithSummary implements FormattedFieldBase {
+  value: String!
+  format: String!
+  processed: String!
+  summary_computed(trimLength: Int = 120): String!
+}
+
+# Links
+type LinkField {
+  url: String!
+}
+
+type LinkFieldWithTitle {
+  url: String!
+  title: String!
+}
+
+type LinkFieldWithTitleAndChildren {
+  url: String!
+  title: String!
+  children: [LinkFieldWithTitle!]
+}
+
+#
+# Content types
+#
+
+enum VersionStatus {
+  PUBLISHED
+  DRAFT
+  PREVIOUS_REVISION
+  PREVIEW
+}
+
+interface Node @entityType {
+  id: String!
+  title: String!
+  status: Boolean!
+  path: String!
+  editUrl: String
+  defaultVersionUrl: String
+  latestVersionUrl: String
+  versionStatus: VersionStatus
+}
+
+directive @entityType on INTERFACE | UNION
+# TODO Something like this might allow automating $resolveNodeType
+# directive @entity(type: String!, bundle: String!) on OBJECT
+directive @entity on OBJECT
+
+type BasicPageNode implements Node @entity {
+  id: String!
+  title: String!
+  status: Boolean!
+  path: String!
+  editUrl: String
+  defaultVersionUrl: String
+  latestVersionUrl: String
+  versionStatus: VersionStatus
+  body: FormattedFieldWithSummary
+  slices: [Slices!]
+}
+
+#
+# Paragraph types
+#
+
+interface Paragraph @entityType {
+  id: String!
+}
+
+type TextParagraph implements Paragraph @entity {
+  id: String!
+  text: FormattedField
+}
+
+type TextWithImageParagraph implements Paragraph @entity {
+  id: String!
+  text: FormattedField
+  image: Image
+}
+
+union Slices @entityType = TextParagraph | TextWithImageParagraph
+
+#
+# Custom block types
+#
+
+interface BlockContent @entityType {
+  id: String!
+}
+
+#
+# Config pages
+#
+
+interface ConfigPage @entityType {
+  id: String!
+}
